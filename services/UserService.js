@@ -38,10 +38,18 @@ const createUser = async (req) => {
 };
 
 const bulkCreateUsers = async (req) => {
-await db.User.bulkCreate(req.body);
+  const users = req.body;
+  let usersInsertedCount = 0;
+  let usersNotInsertedCount = 0;
+
+  for (const user of users) {
+    const userReq = { body: user };
+    const { code } = await createUser(userReq);
+    code === 200 ? usersInsertedCount++ : usersNotInsertedCount++;
+  }
   return {
     code: 200,
-    message: req.body,
+    message: `${usersInsertedCount} users created successfully, ${usersNotInsertedCount} users not inserted`,
   };
 };
 
@@ -77,8 +85,16 @@ const findUsers = async (req) => {
   status && (userQuery.status = status === "true" ? true : false);
   name && (userQuery.name = { [Op.like]: `%${name}%` });
 
-  desde && (sessionQuery.createdAt = { ...sessionQuery.createdAt, [Op.gte]: new Date(desde) });
-  hasta && (sessionQuery.createdAt = { ...sessionQuery.createdAt, [Op.lte]: new Date(hasta) });
+  desde &&
+    (sessionQuery.createdAt = {
+      ...sessionQuery.createdAt,
+      [Op.gte]: new Date(desde),
+    });
+  hasta &&
+    (sessionQuery.createdAt = {
+      ...sessionQuery.createdAt,
+      [Op.lte]: new Date(hasta),
+    });
 
   return {
     code: 200,

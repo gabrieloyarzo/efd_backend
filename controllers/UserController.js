@@ -18,7 +18,7 @@ router.post("/bulkCreate", async (req, res) => {
 
 router.get(
   "/getAllUsers",
-//   [AuthMiddleware.validateToken, UserMiddleware.hasPermissions],
+  [AuthMiddleware.validateToken, UserMiddleware.hasPermissions],
   async (req, res) => {
     const response = await UserService.getAllUsers();
     res.status(response.code).json(response.message);
