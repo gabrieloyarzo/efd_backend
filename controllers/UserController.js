@@ -6,15 +6,23 @@ import AuthMiddleware from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.post("/create", async (req, res) => {
-  const response = await UserService.createUser(req);
-  res.status(response.code).json(response.message);
-});
+router.post(
+  "/create",
+  [AuthMiddleware.validateToken, UserMiddleware.hasPermissions],
+  async (req, res) => {
+    const response = await UserService.createUser(req);
+    res.status(response.code).json(response.message);
+  }
+);
 
-router.post("/bulkCreate", async (req, res) => {
-  const response = await UserService.bulkCreateUsers(req);
-  res.status(response.code).json(response.message);
-});
+router.post(
+  "/bulkCreate",
+  [AuthMiddleware.validateToken, UserMiddleware.hasPermissions],
+  async (req, res) => {
+    const response = await UserService.bulkCreateUsers(req);
+    res.status(response.code).json(response.message);
+  }
+);
 
 router.get(
   "/getAllUsers",
@@ -26,13 +34,13 @@ router.get(
 );
 
 router.get(
-    "/findUsers",
-    [AuthMiddleware.validateToken, UserMiddleware.hasPermissions],
-    async (req, res) => {
-        const response = await UserService.findUsers(req);
-        res.status(response.code).json(response.message);
-    }
-)
+  "/findUsers",
+  [AuthMiddleware.validateToken, UserMiddleware.hasPermissions],
+  async (req, res) => {
+    const response = await UserService.findUsers(req);
+    res.status(response.code).json(response.message);
+  }
+);
 
 router.get(
   "/:id",
