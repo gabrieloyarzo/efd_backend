@@ -96,22 +96,20 @@ const findUsers = async (req) => {
             [Op.lte]: new Date(login_before_date),
         });
 
-    const includeObj =
-        Object.keys(sessionQuery).length > 0
-            ? [
-                  {
-                      model: db.Session,
-                      where: sessionQuery,
-                      attributes: [],
-                  },
-              ]
-            : [];
+    const isModelRequired = Object.keys(sessionQuery).length > 0 ? true : false;
 
     return {
         code: 200,
         message: await db.User.findAll({
             where: userQuery,
-            include: includeObj,
+            include: [
+                {
+                    model: db.Session,
+                    where: sessionQuery,
+                    required: isModelRequired,
+                    attributes: ["createdAt"],
+                },
+            ],
         }),
     };
 };
