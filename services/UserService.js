@@ -96,7 +96,7 @@ const findUsers = async (req) => {
             [Op.lte]: new Date(login_before_date),
         });
 
-    const isModelRequired = Object.keys(sessionQuery).length > 0 ? true : false;
+    const isSessionRequired = Object.keys(sessionQuery).length > 0 ? true : false;
 
     return {
         code: 200,
@@ -106,7 +106,7 @@ const findUsers = async (req) => {
                 {
                     model: db.Session,
                     where: sessionQuery,
-                    required: isModelRequired,
+                    required: isSessionRequired,
                     attributes: ["createdAt"],
                 },
             ],
